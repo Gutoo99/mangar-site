@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container main">
+  <div class="card" style="max-width:480px;margin:24px auto;">
+    <h2 style="margin:0 0 12px">Entrar</h2>
+
+    {% with msgs = get_flashed_messages() %}
+      {% if msgs %}
+        <div class="card" style="margin:10px 0;background:rgba(255,0,0,.08);border-color:rgba(255,0,0,.25)">
+          {% for m in msgs %}<div>{{ m }}</div>{% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form method="post" action="{{ url_for('auth.login') }}" style="display:flex;flex-direction:column;gap:12px">
+      <label>
+        Usuário
+        <input name="username" required
+               style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,.15);background:#0e2015;color:#e8f5e9">
+      </label>
+
+      <label>
+        Senha
+        <input name="password" type="password" required
+               style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,.15);background:#0e2015;color:#e8f5e9">
+      </label>
+
+      <button class="btn" type="submit">Entrar</button>
+    </form>
+
+    <p style="margin-top:10px;opacity:.85">
+      Não tem conta?
+      {% if url_for('auth.register', _external=False) %}
+      <a href="{{ url_for('auth.register') }}">Registrar</a>
+      {% endif %}
+    </p>
+  </div>
+</div>
+{% endblock %}

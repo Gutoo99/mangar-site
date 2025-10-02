@@ -1,6 +1,7 @@
 import os
 import requests
 from flask import Blueprint, request, jsonify
+from typing import Optional
 
 ai_bp = Blueprint("ai", __name__, url_prefix="/api")
 
@@ -30,7 +31,7 @@ def _call_chat(messages):
         print("OpenAI chat exception:", repr(e))
         return f"Erro ao consultar IA: {e}"
 
-def wikipedia_image_for(term: str) -> str | None:
+def wikipedia_image_for(term: str) -> Optional[str]:
     """
     Tenta pegar uma imagem da Wikipedia para o termo (ex.: nome da planta).
     Retorna URL da miniatura (https) ou None.
