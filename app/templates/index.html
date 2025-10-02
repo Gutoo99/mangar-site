@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Início • {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<section class="hero">
+  <h1>Bem-vindo ao <span>Mangará</span></h1>
+  <p>Núcleo agroecológico do IFSP – São Miguel Paulista.</p>
+</section>
+
+<section class="grid-cortina">
+  <a class="card-cortina" href="{{ url_for('main.sobre') }}">
+    <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=1200&auto=format&fit=crop');"></div>
+    <div class="overlay">
+      <h3>Sobre o Projeto</h3>
+      <p>Objetivos, atividades e quem somos.</p>
+    </div>
+  </a>
+  <a class="card-cortina" href="{{ INSTAGRAM_URL }}" target="_blank" rel="noopener">
+    <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1501004318641-b39e6451bec6?q=80&w=1200&auto=format&fit=crop');"></div>
+    <div class="overlay">
+      <h3>Instagram</h3>
+      <p>Acompanhe nossas atualizações.</p>
+    </div>
+  </a>
+  <a class="card-cortina" href="javascript:void(0)" onclick="window.__toggleIA && window.__toggleIA()">
+    <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1524594081293-190a2fe0baae?q=80&w=1200&auto=format&fit=crop');"></div>
+    <div class="overlay">
+      <h3>Consultor IA</h3>
+      <p>Tire dúvidas rápidas aqui mesmo.</p>
+    </div>
+  </a>
+</section>
+{% endblock %}

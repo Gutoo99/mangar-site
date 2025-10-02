@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="container">
+  <h1>{{ BRAND_EMOJI }} Assistente Virtual</h1>
+  <p>Posso ajudar com dúvidas de herbologia e agroecologia. Para começar, me diga: <em>qual planta/efeito você procura</em>, se tem <em>sintomas específicos</em> e em qual <em>região</em> você está 🌿.</p>
+
+  <div id="chat" class="card" style="min-height:280px;">
+    <div id="messages" style="display:flex;flex-direction:column;gap:10px;"></div>
+    <form id="chat-form" style="margin-top:12px;display:flex;gap:8px;">
+      <input type="text" id="chat-input" placeholder="Digite sua pergunta..." style="flex:1;">
+      <button class="btn" type="submit">Enviar</button>
+    </form>
+  </div>
+</section>
+
+<script>
+const msgs = document.getElementById('messages');
+function add(role, text){
+  const b = document.createElement('div');
+  b.className = role === 'user' ? 'bubble user' : 'bubble bot';
+  b.innerText = text;
+  msgs.appendChild(b);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+// mensagem inicial
+add('bot', 'Olá! Para eu te ajudar melhor, me diga a planta/efeito desejado, sintomas e sua região/bioma.');
+
+// envio
+document.getElementById('chat-form').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const input = document.getElementById('chat-input');
+  const q = input.value.trim();
+  if(!q) return;
+  add('user', q);
+  input.value = "";
+
+  const thinking = 'Pensando...';
+  const id = Math.random().toString(36).slice(2);
+  add('bot', thinking); // placeholder
+  const placeholder = msgs.lastChild;
+
+  try{
+    const r = await fetch('/api/ai', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({prompt: q})
+    });
+    const data = await r.json();
+    placeholder.innerText = data.answer || 'Não consegui obter resposta agora.';
+  }catch(e){
+    placeholder.innerText = 'Erro ao contatar o servidor.';
+  }
+});
+</script>
+
+<style>
+.bubble{padding:10px 12px;border-radius:12px;max-width:80%;}
+.user{align-self:flex-end;background:#e0f2f1;}
+.bot{align-self:flex-start;background:#eef4ee;}
+</style>
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="container">
+  <h1>{{ BRAND_EMOJI }} Herbário</h1>
+  <p>Digite o que você procura e nós consultamos nossa IA para sugerir a planta mais adequada (com responsabilidade).</p>
+
+  <form id="herbario-form" class="card">
+    <div class="grid">
+      <label>
+        Nome popular
+        <input type="text" name="nome" placeholder="ex: camomila">
+      </label>
+      <label>
+        Nome científico
+        <input type="text" name="nome_cientifico" placeholder="ex: Matricaria chamomilla">
+      </label>
+    </div>
+    <div class="grid">
+      <label>
+        Usos desejados
+        <input type="text" name="usos" placeholder="ex: relaxar, digestão">
+      </label>
+      <label>
+        Sintomas/alvo
+        <input type="text" name="sintomas" placeholder="ex: ansiedade, insônia">
+      </label>
+    </div>
+    <label>
+      Região/bioma
+      <input type="text" name="regiao" placeholder="ex: Sudeste, Cerrado">
+    </label>
+
+    <button type="submit" class="btn">Buscar planta recomendada</button>
+  </form>
+
+  <div id="resultado" class="result card" style="display:none;">
+    <div class="result-text" id="resultado-texto"></div>
+    <img id="resultado-imagem" alt="Imagem da planta" style="display:none;max-width:320px;border-radius:12px;margin-top:12px;">
+  </div>
+</section>
+
+<script>
+document.getElementById('herbario-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const payload = {
+    nome: fd.get('nome'),
+    nome_cientifico: fd.get('nome_cientifico'),
+    usos: fd.get('usos'),
+    sintomas: fd.get('sintomas'),
+    regiao: fd.get('regiao'),
+  };
+  const resEl = document.getElementById('resultado');
+  const txtEl = document.getElementById('resultado-texto');
+  const imgEl = document.getElementById('resultado-imagem');
+
+  txtEl.innerText = "Consultando IA...";
+  imgEl.style.display = "none";
+  resEl.style.display = "block";
+
+  try {
+    const r = await fetch("/api/herbario/search", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(payload)
+    });
+    const data = await r.json();
+    txtEl.innerText = data.texto || data.error || "Não foi possível obter resposta no momento.";
+    if (data.img_url) {
+      imgEl.src = data.img_url;
+      imgEl.style.display = "block";
+    }
+  } catch (err) {
+    txtEl.innerText = "Erro ao consultar o servidor.";
+  }
+});
+</script>
+{% endblock %}
